@@ -1,91 +1,100 @@
+# MySQL Using Docker
 
-# MYSQL Using Docker
+Docker allows us to run MySQL databases in isolated containers, making it easy to deploy and manage databases without interfering with the host system. In this guide, we'll walk through setting up MySQL using Docker.
 
-Here we will run the database using the Docker.
+---
 
+## 📄 Documentation
+- [Docker Official Docs](https://docs.docker.com/)
+- [MySQL Documentation](https://dev.mysql.com/doc/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
+---
 
+## 🚀 Installation & Setup
 
-## Documentation
+### 1️⃣ Create an SQL File
+First, create a `.sql` file that contains the database schema and initial data.
 
-[Docker](https://docs.docker.com/)
-
-[My sqL](https://dev.mysql.com/doc/)
-
-[Docker Desktop](https://www.docker.com/products/docker-desktop/)
-
-
-
-
-## Installation
-
-Now we will setup the my sql and Docker to run databse on System.
-
-1. First of all we will create the .sql file for the database query which is going to be:
-
-```bash
+```sql
 CREATE DATABASE student;
-use student;
+USE student;
 CREATE TABLE students (
-StudentID int not null AUTO_ INCREMENT,
-FirstName varchar(100) NOT NULL, Surname varchar (100) NOT NULL, PRIMARY KEY (StudentID)
-INSERT INTO students(FirstName, Surname)
+    StudentID INT NOT NULL AUTO_INCREMENT,
+    FirstName VARCHAR(100) NOT NULL,
+    Surname VARCHAR(100) NOT NULL,
+    PRIMARY KEY (StudentID)
+);
+
+INSERT INTO students (FirstName, Surname) 
 VALUES ("John", "Andersen"), ("Emma", "Smith");
 ```
 
-2. Now we will create the Docker file for the same.
+### 2️⃣ Create a Dockerfile
+Now, create a `Dockerfile` to configure the MySQL container.
 
-```bash
+```dockerfile
 FROM mysql:latest
 
 ENV MYSQL_ROOT_PASSWORD=root
 
-COPY ./databse_students.sql /docker-entrypoint-initdb.d/
+COPY ./database_students.sql /docker-entrypoint-initdb.d/
 ```
-    
-## Deployment
 
-Now to deply our database using docker we have following commands.
+---
 
-1. First of all we will check our container.
+## 📦 Deployment
 
+### 1️⃣ Verify Running Containers
+Before building the image, check if any MySQL containers are running.
 ```bash
-  docker container ls
+docker container ls
 ```
 
-2. Now after that we will create the docker image for that we will run the command which is.
-
+### 2️⃣ Build the Docker Image
+Run the following command to build the MySQL Docker image.
 ```bash
-Docker build -t mysql_db .
+docker build -t mysql_db .
 ```
-3. Now we will run the images to check that image is created or not.
 
+### 3️⃣ Check Available Images
+Ensure that the image has been created successfully.
 ```bash
-Docker images
+docker images
 ```
 
-4. Now we will run the images by using the command.
-
+### 4️⃣ Run the MySQL Container
+Now, start the container using the created image.
 ```bash
-docker run mysql_db
+docker run -d --name mysql_container mysql_db
 ```
 
-5. Now after that we will execute the command which is going to run the database.
-
+### 5️⃣ Access the Running Container
+Use the following command to interact with the MySQL container.
 ```bash
-docker exec -it docker_images /bin/bash
+docker exec -it mysql_container /bin/bash
 ```
 
-6. Now we will run the command to go inside the query inside the database.
-
+### 6️⃣ Navigate to the SQL File
 ```bash
 cd docker-entrypoint-initdb.d/
 ```
 
-7. Now we are inside the database and we will run the query to do so.
-
+### 7️⃣ Access the MySQL Database
+To log in to MySQL inside the container:
 ```bash
-select * from students.
+mysql -u root -p
+```
+Enter the password (`root` in this case) when prompted.
+
+### 8️⃣ Verify the Database
+Once inside MySQL, run the following command to check the stored data.
+```sql
+USE student;
+SELECT * FROM students;
 ```
 
+---
+
+Now, your MySQL database is successfully running inside a Docker container! 🚀
 
